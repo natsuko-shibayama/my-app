@@ -1,52 +1,39 @@
-import React,  { Component } from 'react';
+import React, { useState } from 'react';
+import Button from 'react-bootstrap/Button';
+export default function Todo() {
+  const [todos, setTodos] = useState([]);
+  const [name, setName] = useState('');
 
-// 1.クラスを作る→2.renderメソッドを定義
-export default class Todo extends Component{
-  constructor(props) {
-    super(props);
-    this.state = {
-      todos: [],
-      name: ''
-    };
-  }
-  // 3.入力された値を受け取る処理
-  onInput = (event) => {
-    this.setState({
-      name: event.target.value
-    });
+  const onInput = (event) => {
+    setName(event.target.value);
   }
 
-  // 3.todoを追加するメソッドの定義
-  addTodo = () => {
-    const{ todos, name} = this.state;
-    this.setState({
-      todos: [...todos, name]
-    });
+  const addTodo = () => {
+    setTodos([...todos, name]);
+    setName(''); // 追加後にフィールドをクリア
   }
 
-
-  // 4.todoを削除するメソッドの定義
-  removeTodo = (index) => {
-    const { todos, name } = this.state;
-    this.setState({
-      todos: [...todos.slice(0, index), ...todos.slice(index + 1)]
-    });
+  const removeTodo = (index) => {
+    setTodos([...todos.slice(0, index), ...todos.slice(index + 1)]);
   }
 
-
-  render() {
-    const { todos } = this.state;
-    
-    return (<div>
-      {/* <input type="text" /> */}
-      <input type="text" onInput={this.onInput} />
-      <button onClick={this.addTodo}>登録</button>
+  return (
+    <div>
+      <h3>タスク管理アプリ</h3>
+      <input
+        type="text"
+        value={name}
+        onChange={onInput}
+      />
+      <Button className="btn btn-primary" onClick={addTodo}>登録</Button>
       <ul>
-        {todos.map((todo, index) => <li key={index}>
-          {todo}
-          <button onClick={() => { this.removeTodo(index) }}>削除</button>
-          </li>)}
+        {todos.map((todo, index) => (
+          <li key={index}>
+            {todo}
+            <Button onClick={() => { removeTodo(index) }}>削除</Button>
+          </li>
+        ))}
       </ul>
-    </div>);
-  }
+    </div>
+  );
 }
